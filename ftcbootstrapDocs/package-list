@@ -1,0 +1,15 @@
+org.ftcbootstrap
+org.ftcbootstrap.components
+org.ftcbootstrap.components.operations.motors
+org.ftcbootstrap.components.operations.servos
+org.ftcbootstrap.components.phone
+org.ftcbootstrap.components.utils
+org.ftcbootstrap.demos
+org.ftcbootstrap.demos.beginner
+org.ftcbootstrap.demos.beginner.opmodes
+org.ftcbootstrap.demos.demobot
+org.ftcbootstrap.demos.demobot.opmodes
+org.ftcbootstrap.demos.navbot
+org.ftcbootstrap.demos.navbot.opmodes
+org.ftcbootstrap.demos.pushbot
+org.ftcbootstrap.demos.pushbot.opmodes
