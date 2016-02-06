@@ -22,6 +22,10 @@ public class AutonomousRed extends ActiveOpMode {
     private TankDriveToTime driveTime;
     private int step;
 
+
+    private int index = 100000;
+    private float localDirection;
+
     static{ System.loadLibrary("opencv_java3"); }
 
     /**
@@ -89,9 +93,7 @@ public class AutonomousRed extends ActiveOpMode {
                 }
                 break;
             case 3: //image analysis
-                int index = 100000;
-                float localDirection;
-                while(index >0){
+                if(index >0){
                     localDirection =((FtcRobotControllerActivity) hardwareMap.appContext).getDirection();
                     if (localDirection > 0) {
                         Log.i("RJG", "direction =" + localDirection);
@@ -99,6 +101,8 @@ public class AutonomousRed extends ActiveOpMode {
                     }else {
                         index = 0;
                     }
+                } else {
+                    step++;
                 }
                 return;
                 //break;
