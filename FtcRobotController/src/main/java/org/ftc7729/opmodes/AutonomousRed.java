@@ -1,14 +1,10 @@
 package org.ftc7729.opmodes;
 
-import android.util.Log;
-
 import com.qualcomm.ftcrobotcontroller.FtcRobotControllerActivity;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.ftc7729.FTCTeamRobot;
 import org.ftcbootstrap.ActiveOpMode;
-import org.ftcbootstrap.components.operations.motors.GamePadTankDrive;
-import org.ftcbootstrap.components.operations.motors.TankDrive;
 import org.ftcbootstrap.components.operations.motors.TankDriveToODS;
 import org.ftcbootstrap.components.operations.motors.TankDriveToTime;
 import org.ftcbootstrap.components.utils.DriveDirection;
@@ -49,6 +45,16 @@ public class AutonomousRed extends ActiveOpMode {
 
     }
 
+    private TankDriveToODS getDriveODS() {
+        //reverse because robot drives backwards
+        return new TankDriveToODS(this, robot.getOpticalDistanceSensor(), robot.getDriveRight(), robot.getDriveLeft());
+    }
+
+    private TankDriveToTime getDriveTime() {
+        //reverse because robot drives backwards
+        return new TankDriveToTime(this, robot.getDriveRight(), robot.getDriveLeft());
+    }
+
     /**
      * Implement this method to define the code to run when the Start button is pressed on the Driver station.
      * This method will be called on each hardware cycle just as the loop() method is called for event based Opmodes
@@ -59,12 +65,15 @@ public class AutonomousRed extends ActiveOpMode {
     protected void activeLoop() throws InterruptedException {
 
         getTelemetryUtil().addData("step", step);
+        if (index != 100000 && index != 0) {
+            getTelemetryUtil().addData("cameraIndex", index);
+        }
 
         switch(step) {
             case 0: //drive to white line
                 if (driveODS == null) {
-                    driveODS = new TankDriveToODS(this, robot.getOpticalDistanceSensor(), robot.getDriveLeft(), robot.getDriveRight());
-                    driveODS.runToTarget(0.3, 0.0, DriveDirection.DRIVE_FORWARD);
+                    driveODS = getDriveODS();
+                    driveODS.runToTarget(0.5, 0.0, DriveDirection.DRIVE_FORWARD);
                 } else {
                     if (!driveODS.isDriving()) {
                         driveODS = null;
@@ -74,8 +83,8 @@ public class AutonomousRed extends ActiveOpMode {
                 break;
             case 1: //drive past white line
                 if (driveTime == null) {
-                    driveTime = new TankDriveToTime(this, robot.getDriveLeft(), robot.getDriveRight());
-                    driveTime.runToTarget(0.3, 1.0, DriveDirection.DRIVE_FORWARD);
+                    driveTime = getDriveTime();
+                    driveTime.runToTarget(0.5, 1.0, DriveDirection.DRIVE_FORWARD);
                 } else {
                     if (!driveTime.isDriving()) {
                         driveTime = null;
@@ -85,42 +94,51 @@ public class AutonomousRed extends ActiveOpMode {
                 break;
             case 2: //turn to align with white line
                 if (driveODS == null) {
-                    driveODS = new TankDriveToODS(this, robot.getOpticalDistanceSensor(), robot.getDriveLeft(), robot.getDriveRight());
-                    driveODS.runToTarget(0.0, 0.0, DriveDirection.SPIN_RIGHT);
+                    driveODS = getDriveODS();
+                    driveODS.runToTarget(0.5, 0.0, DriveDirection.SPIN_RIGHT);
                 } else {
                     driveODS = null;
                     step++;
                 }
                 break;
             case 3: //image analysis
-                if(index >0){
+                if (index == 100000) {
+                    robot.getDriveLeft().setDirection(DcMotor.Direction.FORWARD);
+                    robot.getDriveRight().setDirection(DcMotor.Direction.REVERSE);
+                }
+                if(index > 0){
+                    //localDirection will be a value between 0 (max left) and 1 (max right)
                     localDirection =((FtcRobotControllerActivity) hardwareMap.appContext).getDirection();
                     if (localDirection > 0) {
-                        Log.i("RJG", "direction =" + localDirection);
-                        steer(((float).5 -  localDirection) / 10);
+                        getTelemetryUtil().addData("direction", localDirection);
+                        steer(((float).5 -  localDirection) / 2); // was divide by 10
+                        index--;
                     }else {
                         index = 0;
                     }
                 } else {
                     step++;
                 }
-                return;
-                //break;
+                break;
             case 4: //back up
-                if (driveTime == null) {
-                    driveTime = new TankDriveToTime(this, robot.getDriveLeft(), robot.getDriveRight());
-                    driveTime.runToTarget(0.3, 1.0, DriveDirection.DRIVE_BACKWARD);
+                robot.getDriveLeft().setPower(0);
+                robot.getDriveRight().setPower(0);
+                getTelemetryUtil().addData("info", "STEP 3 COMPLETE");
+                break;
+               /* if (driveTime == null) {
+                    driveTime = getDriveTime();
+                    driveTime.runToTarget(0.5, 1.0, DriveDirection.DRIVE_BACKWARD);
                 } else {
                     if (!driveTime.isDriving()) {
                         driveTime = null;
                         step++;
                     }
                 }
-                break;
+                break;*/
             case 5: //turn towards mountain
                 if (driveTime == null) {
-                    driveTime = new TankDriveToTime(this, robot.getDriveLeft(), robot.getDriveRight());
-                    driveTime.runToTarget(0.3, 1.0, DriveDirection.DRIVE_FORWARD);
+                    driveTime = getDriveTime();
+                    driveTime.runToTarget(0.5, 1.0, DriveDirection.DRIVE_FORWARD);
                 } else {
                     if (!driveTime.isDriving()) {
                         driveTime = null;
@@ -130,8 +148,8 @@ public class AutonomousRed extends ActiveOpMode {
                 break;
             case 6: //
                 if (driveTime == null) {
-                    driveTime = new TankDriveToTime(this, robot.getDriveLeft(), robot.getDriveRight());
-                    driveTime.runToTarget(0.3, 1.0, DriveDirection.DRIVE_FORWARD);
+                    driveTime = getDriveTime();
+                    driveTime.runToTarget(0.5, 1.0, DriveDirection.DRIVE_FORWARD);
                 } else {
                     if (!driveTime.isDriving()) {
                         driveTime = null;
@@ -150,7 +168,18 @@ public class AutonomousRed extends ActiveOpMode {
     }
 
     public void steer(float direction) {
-        robot.getDriveRight().setPower(.1+direction);
-        robot.getDriveLeft().setPower(.1-direction);
+
+        /*double adjust;
+        double scaleFactor;
+        double basePower = .5;
+
+        adjust = 0.5 - direction;
+        scaleFactor = .85;
+
+        robot.getDriveRight().setPower(basePower - adjust*scaleFactor);
+        robot.getDriveLeft().setPower(basePower + adjust*scaleFactor);*/
+
+        robot.getDriveLeft().setPower(.5+direction);
+        robot.getDriveRight().setPower(.5-direction);
     }
 }

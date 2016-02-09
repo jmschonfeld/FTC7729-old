@@ -1,10 +1,10 @@
 package org.ftc7729;
 
+import com.qualcomm.robotcore.hardware.CompassSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.ftcbootstrap.RobotConfiguration;
 import org.ftcbootstrap.components.utils.TelemetryUtil;
@@ -21,10 +21,14 @@ public class FTCTeamRobot extends RobotConfiguration {
 
     //sensors
     private OpticalDistanceSensor ods;
+    private CompassSensor direction;
+
 
     //motors
     private DcMotor driveLeft;
     private DcMotor driveRight;
+
+    //windshield wiper
     private Servo servo;
 
 
@@ -55,10 +59,10 @@ public class FTCTeamRobot extends RobotConfiguration {
         setTelemetry(telemetryUtil);
 
         servo = (Servo) getHardwareOn("servo", hardwareMap.servo);
-        driveLeft = (DcMotor) getHardwareOn("driveLeft", hardwareMap.dcMotor);
-        driveRight = (DcMotor) getHardwareOn("driveRight", hardwareMap.dcMotor);
+        driveLeft = (DcMotor) getHardwareOn("left_drive", hardwareMap.dcMotor);
+        driveRight = (DcMotor) getHardwareOn("right_drive", hardwareMap.dcMotor);
         ods = (OpticalDistanceSensor) getHardwareOn("lightSensor", hardwareMap.opticalDistanceSensor);
-
+        direction = (CompassSensor) getHardwareOn("direction", hardwareMap.compassSensor);
 
     }
 
@@ -91,6 +95,11 @@ public class FTCTeamRobot extends RobotConfiguration {
     public DcMotor getDriveRight() {
         return driveRight;
     }
+
+    /**
+     * @return CompassSensor
+     */
+    public CompassSensor getCompassSensor() { return direction; }
 
 
 }

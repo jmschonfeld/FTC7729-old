@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
 
 import org.ftc7729.opmodes.AutonomousRed;
 import org.ftc7729.opmodes.ClassCombinationAttempt;
-import org.ftc7729.opmodes.GamePadDriveOpMode;
 
 
 /**
@@ -35,7 +34,8 @@ public class FTCTeamRegistry implements OpModeRegister {
 
       manager.register("AutonomousRed", AutonomousRed.class);
 
-      manager.register("GamePadDriveOpMode", GamePadDriveOpMode.class);
+      //manager.register("GamePadDriveOpMode", GamePadDriveOpMode.class);
+
 
 
     //manager.register("TelemetryTest", TelemetryTest.class);
