@@ -16,12 +16,12 @@ public class AutonomousRed extends ActiveOpMode {
     private FTCTeamRobot robot;
     private TankDriveToODS driveODS;
     private TankDriveToTime driveTime;
-    private int step;
+    private int step, side;
 
 
     private int index = 100000;
-    private float localDirection;
 
+    //loads the OpenCV library into the program
     static{ System.loadLibrary("opencv_java3"); }
 
     /**
@@ -33,6 +33,8 @@ public class AutonomousRed extends ActiveOpMode {
         robot = FTCTeamRobot.newConfig(hardwareMap, getTelemetryUtil());
         //Note The Telemetry Utility is designed to let you organize all telemetry data before sending it to
         //the Driver station via the sendTelemetry command
+        robot.getDriveLeft().setDirection(DcMotor.Direction.FORWARD);
+        robot.getDriveRight().setDirection(DcMotor.Direction.REVERSE);
         getTelemetryUtil().addData("Init", getClass().getSimpleName() + " initialized.");
         getTelemetryUtil().sendTelemetry();
 
@@ -41,7 +43,7 @@ public class AutonomousRed extends ActiveOpMode {
     @Override
     protected void onStart() throws InterruptedException {
         super.onStart();
-        step = 3;
+        step = 0;
 
     }
 
@@ -54,6 +56,7 @@ public class AutonomousRed extends ActiveOpMode {
         //reverse because robot drives backwards
         return new TankDriveToTime(this, robot.getDriveRight(), robot.getDriveLeft());
     }
+
 
     /**
      * Implement this method to define the code to run when the Start button is pressed on the Driver station.
@@ -73,9 +76,8 @@ public class AutonomousRed extends ActiveOpMode {
             case 0: //drive to white line
                 if (driveODS == null) {
                     driveODS = getDriveODS();
-                    driveODS.runToTarget(0.5, 0.0, DriveDirection.DRIVE_FORWARD);
                 } else {
-                    if (!driveODS.isDriving()) {
+                    if (driveODS.runToTarget(0.5, 0.03, DriveDirection.DRIVE_FORWARD)) {
                         driveODS = null;
                         step++;
                     }
@@ -84,9 +86,8 @@ public class AutonomousRed extends ActiveOpMode {
             case 1: //drive past white line
                 if (driveTime == null) {
                     driveTime = getDriveTime();
-                    driveTime.runToTarget(0.5, 1.0, DriveDirection.DRIVE_FORWARD);
                 } else {
-                    if (!driveTime.isDriving()) {
+                    if (driveTime.runToTarget(0.5, 0.4, DriveDirection.DRIVE_FORWARD)) {
                         driveTime = null;
                         step++;
                     }
@@ -95,67 +96,59 @@ public class AutonomousRed extends ActiveOpMode {
             case 2: //turn to align with white line
                 if (driveODS == null) {
                     driveODS = getDriveODS();
-                    driveODS.runToTarget(0.5, 0.0, DriveDirection.SPIN_RIGHT);
                 } else {
-                    driveODS = null;
-                    step++;
-                }
-                break;
-            case 3: //image analysis
-                if (index == 100000) {
-                    robot.getDriveLeft().setDirection(DcMotor.Direction.FORWARD);
-                    robot.getDriveRight().setDirection(DcMotor.Direction.REVERSE);
-                }
-                if(index > 0){
-                    //localDirection will be a value between 0 (max left) and 1 (max right)
-                    localDirection =((FtcRobotControllerActivity) hardwareMap.appContext).getDirection();
-                    if (localDirection > 0) {
-                        getTelemetryUtil().addData("direction", localDirection);
-                        steer(((float).5 -  localDirection) / 2); // was divide by 10
-                        index--;
-                    }else {
-                        index = 0;
-                    }
-                } else {
-                    step++;
-                }
-                break;
-            case 4: //back up
-                robot.getDriveLeft().setPower(0);
-                robot.getDriveRight().setPower(0);
-                getTelemetryUtil().addData("info", "STEP 3 COMPLETE");
-                break;
-               /* if (driveTime == null) {
-                    driveTime = getDriveTime();
-                    driveTime.runToTarget(0.5, 1.0, DriveDirection.DRIVE_BACKWARD);
-                } else {
-                    if (!driveTime.isDriving()) {
-                        driveTime = null;
+                    if (driveODS.runToTarget(0.5, 0.03, DriveDirection.SPIN_RIGHT)) {
+                        driveODS = null;
                         step++;
                     }
                 }
-                break;*/
-            case 5: //turn towards mountain
+                break;
+            case 3: //spin towards the correct button
                 if (driveTime == null) {
                     driveTime = getDriveTime();
-                    driveTime.runToTarget(0.5, 1.0, DriveDirection.DRIVE_FORWARD);
+                    side = ((FtcRobotControllerActivity)hardwareMap.appContext).getDetector().getSide();
                 } else {
-                    if (!driveTime.isDriving()) {
+                    if (driveTime.runToTarget(0.25, 0.1, side == 1 ? DriveDirection.SPIN_RIGHT : DriveDirection.SPIN_LEFT)) {
                         driveTime = null;
                         step++;
                     }
                 }
                 break;
-            case 6: //
+            case 4: //move forward towards button
                 if (driveTime == null) {
                     driveTime = getDriveTime();
-                    driveTime.runToTarget(0.5, 1.0, DriveDirection.DRIVE_FORWARD);
                 } else {
-                    if (!driveTime.isDriving()) {
+                    if (driveTime.runToTarget(0.25, 1, DriveDirection.DRIVE_FORWARD)) {
                         driveTime = null;
                         step++;
                     }
                 }
+                break;
+            case 5: //move backwards away button
+                if (driveTime == null) {
+                    driveTime = getDriveTime();
+                } else {
+                    if (driveTime.runToTarget(0.25, 1, DriveDirection.DRIVE_BACKWARD)) {
+                        driveTime = null;
+                        step++;
+                    }
+                }
+                break;
+            case 6: //spin to align with white line
+                if (driveTime == null) {
+                    driveTime = getDriveTime();
+                } else {
+                    if (driveTime.runToTarget(0.25, 0.1, side == 0 ? DriveDirection.SPIN_RIGHT : DriveDirection.SPIN_LEFT)) {
+                        driveTime = null;
+                        step++;
+                    }
+                }
+                break;
+            //back up
+            //turn towards mountain
+            //drive up mountain
+            default:
+                getTelemetryUtil().addData("info", "PROCESS COMPLETE");
                 break;
         }
 
@@ -167,9 +160,27 @@ public class AutonomousRed extends ActiveOpMode {
 
     }
 
-    public void steer(float direction) {
+    /*public void steer(double direction, double precision, double speed) {
 
-        /*double adjust;
+        if (direction >= .5 - precision && direction <= .5 + precision) {
+            robot.getDriveLeft().setPower(speed);
+            robot.getDriveRight().setPower(speed);
+        } else if (direction < .5 - precision) {
+            robot.getDriveRight().setPower(0);
+        } else {
+            robot.getDriveLeft().setPower(0);
+            robot.getDriveRight().setPower(0.5);
+        }
+
+
+        //direction = ( 0.5f -  direction) / 2;
+        //getTelemetryUtil().addData("dirMap", direction);
+
+        //by now, direction will have been mapped to a value between -0.25 and 0.25 ( (.5 - dir) / 2 )
+
+        /*
+        This is something that hughes attempted to use instead of the line above
+        double adjust;
         double scaleFactor;
         double basePower = .5;
 
@@ -177,9 +188,10 @@ public class AutonomousRed extends ActiveOpMode {
         scaleFactor = .85;
 
         robot.getDriveRight().setPower(basePower - adjust*scaleFactor);
-        robot.getDriveLeft().setPower(basePower + adjust*scaleFactor);*/
-
-        robot.getDriveLeft().setPower(.5+direction);
-        robot.getDriveRight().setPower(.5-direction);
-    }
+        robot.getDriveLeft().setPower(basePower + adjust*scaleFactor);
+        getTelemetryUtil().addData("powerLeft", .5-direction);
+        getTelemetryUtil().addData("powerRight", .5+direction);
+        robot.getDriveLeft().setPower(.5-direction); //initialy left was + and right was -
+        robot.getDriveRight().setPower(.5+direction);
+    }*/
 }

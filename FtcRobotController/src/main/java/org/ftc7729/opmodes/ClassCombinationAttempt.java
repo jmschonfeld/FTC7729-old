@@ -51,7 +51,7 @@ public class ClassCombinationAttempt extends OpMode {
     double tapeSpeedPercentage = 0.35;
 
     double position = 1.00;
-    double motorMaxPercentage = .05;
+    double motorMaxPercentage = .8; // JEREMY: was 0.05
 
     double totalPower = 0.00;
 

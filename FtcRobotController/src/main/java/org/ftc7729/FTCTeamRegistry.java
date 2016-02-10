@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
 
 import org.ftc7729.opmodes.AutonomousRed;
 import org.ftc7729.opmodes.ClassCombinationAttempt;
+import org.ftc7729.opmodes.OutputODS;
 
 
 /**
@@ -33,6 +34,8 @@ public class FTCTeamRegistry implements OpModeRegister {
       manager.register("TeleOp", ClassCombinationAttempt.class);
 
       manager.register("AutonomousRed", AutonomousRed.class);
+
+      manager.register("OutputODS", OutputODS.class);
 
       //manager.register("GamePadDriveOpMode", GamePadDriveOpMode.class);
 

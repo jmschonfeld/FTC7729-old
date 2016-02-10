@@ -2,10 +2,6 @@ package org.ftc7729;
 
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -14,6 +10,10 @@ import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 // Ryan Jay Gray 2015-12
 // Modified OpenCV ColorBlobDetector class to steer FTC robot
@@ -41,6 +41,8 @@ public class ColorBlobDetector {
     Mat mMask = new Mat();
     Mat mDilatedMask = new Mat();
     Mat mHierarchy = new Mat();
+
+    private int side = -1; //JEREMY: 0 for left, 1 for right
 
     public void setColorRadius(Scalar radius) {
         mColorRadius = radius;
@@ -128,6 +130,13 @@ public class ColorBlobDetector {
             // RJG simple calculation of directions ranging from 0 (max left) to 1 (max right)
             Imgproc.rectangle(rgbaImage, tlPoint, brPoint, rect_COLOR, 3);
             goDirection = (float)((brPoint.x + tlPoint.x)/2)/rgbaImage.cols();
+            if (brPoint.x < 2*rgbaImage.cols()/3) {
+                side = 0;
+            } else if (tlPoint.x > rgbaImage.cols()/2) {
+                side = 1;
+            } else {
+                side = -1;
+            }
         } else {
 //            tlPoint.x = 0;
 //            tlPoint.y = 0;
@@ -152,6 +161,8 @@ public class ColorBlobDetector {
             }
         }
     }
+
+    public int getSide() { return side; }
 
     public float getDirection() {
         return goDirection;
