@@ -144,9 +144,36 @@ public class AutonomousRed extends ActiveOpMode {
                     }
                 }
                 break;
-            //back up
-            //turn towards mountain
-            //drive up mountain
+            case 7: //move backwards
+                if (driveTime == null) {
+                    driveTime = getDriveTime();
+                } else {
+                    if (driveTime.runToTarget(0.5, 5, DriveDirection.DRIVE_BACKWARD)) {
+                        driveTime = null;
+                        step++;
+                    }
+                }
+                break;
+            case 8: //turn towards mountain
+                if (driveTime == null) {
+                    driveTime = getDriveTime();
+                } else {
+                    if (driveTime.runToTarget(0.5, 0.5, DriveDirection.SPIN_RIGHT)) {
+                        driveTime = null;
+                        step++;
+                    }
+                }
+                break;
+            case 9: //drive up mountain
+                if (driveTime == null) {
+                    driveTime = getDriveTime();
+                } else {
+                    if (driveTime.runToTarget(0.8, 10, DriveDirection.DRIVE_FORWARD)) {
+                        driveTime = null;
+                        step++;
+                    }
+                }
+                break;
             default:
                 getTelemetryUtil().addData("info", "PROCESS COMPLETE");
                 break;
