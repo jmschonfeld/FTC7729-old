@@ -4,6 +4,7 @@ import com.qualcomm.ftcrobotcontroller.opmodes.NullOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
 
+import org.ftc7729.opmodes.AutonomousBlue;
 import org.ftc7729.opmodes.AutonomousRed;
 import org.ftc7729.opmodes.ClassCombinationAttempt;
 import org.ftc7729.opmodes.OutputODS;
@@ -32,6 +33,8 @@ public class FTCTeamRegistry implements OpModeRegister {
       manager.register("NullOp", NullOp.class);
 
       manager.register("TeleOp", ClassCombinationAttempt.class);
+
+      manager.register("AutonomousBlue", AutonomousBlue.class);
 
       manager.register("AutonomousRed", AutonomousRed.class);
 

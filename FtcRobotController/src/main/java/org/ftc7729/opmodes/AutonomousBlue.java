@@ -12,7 +12,7 @@ import org.ftcbootstrap.components.utils.DriveDirection;
 /**
  * Created by Jeremy Schonfeld on 1/29/2016.
  */
-public class AutonomousRed extends ActiveOpMode {
+public class AutonomousBlue extends ActiveOpMode {
     private FTCTeamRobot robot;
     private TankDriveToODS driveODS;
     private TankDriveToTime driveTime;
@@ -96,7 +96,7 @@ public class AutonomousRed extends ActiveOpMode {
                 if (driveODS == null) {
                     driveODS = getDriveODS();
                 } else {
-                    if (driveODS.runToTarget(0.25, 0.03, DriveDirection.SPIN_LEFT)) {
+                    if (driveODS.runToTarget(0.25, 0.03, DriveDirection.SPIN_RIGHT)) {
                         driveODS = null;
                         step++;
                     }
@@ -107,7 +107,8 @@ public class AutonomousRed extends ActiveOpMode {
                     driveTime = getDriveTime();
                     side = ((FtcRobotControllerActivity)hardwareMap.appContext).getDetector().getSide();
                 } else {
-                    if (driveTime.runToTarget(0.25, 0.3, side == 1 ? DriveDirection.SPIN_RIGHT : DriveDirection.SPIN_LEFT)) {
+                    //reversed directions because the camera calibrates to the red color (ex. red on left, go right)
+                    if (driveTime.runToTarget(0.25, 0.3, side == 0 ? DriveDirection.SPIN_RIGHT : DriveDirection.SPIN_LEFT)) {
                         driveTime = null;
                         step++;
                     }
@@ -137,7 +138,7 @@ public class AutonomousRed extends ActiveOpMode {
                 if (driveTime == null) {
                     driveTime = getDriveTime();
                 } else {
-                    if (driveTime.runToTarget(0.25, 0.3, side == 0 ? DriveDirection.SPIN_RIGHT : DriveDirection.SPIN_LEFT)) {
+                    if (driveTime.runToTarget(0.25, 0.3, side == 1 ? DriveDirection.SPIN_RIGHT : DriveDirection.SPIN_LEFT)) {
                         driveTime = null;
                         step++;
                     }
@@ -157,7 +158,7 @@ public class AutonomousRed extends ActiveOpMode {
                 if (driveTime == null) {
                     driveTime = getDriveTime();
                 } else {
-                    if (driveTime.runToTarget(0.5, 1.25, DriveDirection.SPIN_RIGHT)) {
+                    if (driveTime.runToTarget(0.5, 1.25, DriveDirection.SPIN_LEFT)) {
                         driveTime = null;
                         step++;
                     }
