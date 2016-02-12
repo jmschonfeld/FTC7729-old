@@ -51,7 +51,7 @@ public class ClassCombinationAttempt extends OpMode {
     double tapeSpeedPercentage = 0.35;
 
     double position = 1.00;
-    double motorMaxPercentage = .8; // JEREMY: was 0.05
+    double motorMaxPercentage = 0.25;
 
     double totalPower = 0.00;
 
@@ -92,6 +92,7 @@ public class ClassCombinationAttempt extends OpMode {
 
         motorHinges = hardwareMap.dcMotor.get("hit_climbers");
 
+        motorRight.setDirection(DcMotor.Direction.FORWARD);
         motorLeft.setDirection(DcMotor.Direction.REVERSE);
         motorAim.setDirection(DcMotor.Direction.REVERSE);
         motorHinges.setDirection(DcMotor.Direction.REVERSE);

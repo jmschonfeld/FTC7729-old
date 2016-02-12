@@ -42,7 +42,7 @@ public class ColorBlobDetector {
     Mat mDilatedMask = new Mat();
     Mat mHierarchy = new Mat();
 
-    private int side = -1; //JEREMY: 0 for left, 1 for right
+    private int side = -1; //JEREMY: 0 for left, 1 for right, -1 for I don't know
 
     public void setColorRadius(Scalar radius) {
         mColorRadius = radius;
@@ -132,7 +132,7 @@ public class ColorBlobDetector {
             goDirection = (float)((brPoint.x + tlPoint.x)/2)/rgbaImage.cols();
             if (brPoint.x < 2*rgbaImage.cols()/3) {
                 side = 0;
-            } else if (tlPoint.x > rgbaImage.cols()/2) {
+            } else if (tlPoint.x > rgbaImage.cols()/4) {
                 side = 1;
             } else {
                 side = -1;

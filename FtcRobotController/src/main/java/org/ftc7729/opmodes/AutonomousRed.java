@@ -17,6 +17,7 @@ public class AutonomousRed extends ActiveOpMode {
     private TankDriveToODS driveODS;
     private TankDriveToTime driveTime;
     private int step, side;
+    private long startTime = 0;
 
 
     private int index = 100000;
@@ -43,8 +44,8 @@ public class AutonomousRed extends ActiveOpMode {
     @Override
     protected void onStart() throws InterruptedException {
         super.onStart();
-        step = 0;
-
+        step = 3;
+        startTime = System.currentTimeMillis();
     }
 
     private TankDriveToODS getDriveODS() {
@@ -68,16 +69,14 @@ public class AutonomousRed extends ActiveOpMode {
     protected void activeLoop() throws InterruptedException {
 
         getTelemetryUtil().addData("step", step);
-        if (index != 100000 && index != 0) {
-            getTelemetryUtil().addData("cameraIndex", index);
-        }
+        getTelemetryUtil().addData("runtime", (int)(((double)(System.currentTimeMillis()-startTime))/1000.0));
 
         switch(step) {
             case 0: //drive to white line
                 if (driveODS == null) {
                     driveODS = getDriveODS();
                 } else {
-                    if (driveODS.runToTarget(0.5, 0.03, DriveDirection.DRIVE_FORWARD)) {
+                    if (driveODS.runToTarget(0.8, 0.03, DriveDirection.DRIVE_FORWARD)) {
                         driveODS = null;
                         step++;
                     }
@@ -97,7 +96,7 @@ public class AutonomousRed extends ActiveOpMode {
                 if (driveODS == null) {
                     driveODS = getDriveODS();
                 } else {
-                    if (driveODS.runToTarget(0.5, 0.03, DriveDirection.SPIN_RIGHT)) {
+                    if (driveODS.runToTarget(0.25, 0.03, DriveDirection.SPIN_RIGHT)) {
                         driveODS = null;
                         step++;
                     }
@@ -108,7 +107,7 @@ public class AutonomousRed extends ActiveOpMode {
                     driveTime = getDriveTime();
                     side = ((FtcRobotControllerActivity)hardwareMap.appContext).getDetector().getSide();
                 } else {
-                    if (driveTime.runToTarget(0.25, 0.1, side == 1 ? DriveDirection.SPIN_RIGHT : DriveDirection.SPIN_LEFT)) {
+                    if (driveTime.runToTarget(0.25, 0.3, side == 1 ? DriveDirection.SPIN_RIGHT : DriveDirection.SPIN_LEFT)) {
                         driveTime = null;
                         step++;
                     }
@@ -138,7 +137,7 @@ public class AutonomousRed extends ActiveOpMode {
                 if (driveTime == null) {
                     driveTime = getDriveTime();
                 } else {
-                    if (driveTime.runToTarget(0.25, 0.1, side == 0 ? DriveDirection.SPIN_RIGHT : DriveDirection.SPIN_LEFT)) {
+                    if (driveTime.runToTarget(0.25, 0.3, side == 0 ? DriveDirection.SPIN_RIGHT : DriveDirection.SPIN_LEFT)) {
                         driveTime = null;
                         step++;
                     }
@@ -148,7 +147,7 @@ public class AutonomousRed extends ActiveOpMode {
                 if (driveTime == null) {
                     driveTime = getDriveTime();
                 } else {
-                    if (driveTime.runToTarget(0.5, 5, DriveDirection.DRIVE_BACKWARD)) {
+                    if (driveTime.runToTarget(0.5, 2, DriveDirection.DRIVE_BACKWARD)) {
                         driveTime = null;
                         step++;
                     }
@@ -158,7 +157,7 @@ public class AutonomousRed extends ActiveOpMode {
                 if (driveTime == null) {
                     driveTime = getDriveTime();
                 } else {
-                    if (driveTime.runToTarget(0.5, 0.5, DriveDirection.SPIN_RIGHT)) {
+                    if (driveTime.runToTarget(0.5, 1.25, DriveDirection.SPIN_LEFT)) {
                         driveTime = null;
                         step++;
                     }
@@ -168,7 +167,7 @@ public class AutonomousRed extends ActiveOpMode {
                 if (driveTime == null) {
                     driveTime = getDriveTime();
                 } else {
-                    if (driveTime.runToTarget(0.8, 10, DriveDirection.DRIVE_FORWARD)) {
+                    if (driveTime.runToTarget(1, 10, DriveDirection.DRIVE_BACKWARD)) {
                         driveTime = null;
                         step++;
                     }
