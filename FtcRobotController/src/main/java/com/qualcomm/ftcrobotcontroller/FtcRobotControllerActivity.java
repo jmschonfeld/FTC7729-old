@@ -85,8 +85,6 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-  protected WifiManager.WifiLock wifiLock;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
@@ -98,6 +96,9 @@ public class FtcRobotControllerActivity extends Activity implements View.OnTouch
     private static final int REQUEST_CONFIG_WIFI_CHANNEL = 1;
     private static final boolean USE_DEVICE_EMULATION = false;
     private static final int NUM_GAMEPADS = 2;
+
+
+    protected WifiManager.WifiLock wifiLock;
 
     public static final String CONFIGURE_FILENAME = "CONFIGURE_FILENAME";
 
