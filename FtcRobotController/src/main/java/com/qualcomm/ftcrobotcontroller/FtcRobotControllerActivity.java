@@ -40,6 +40,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.hardware.usb.UsbManager;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -68,10 +69,9 @@ import com.qualcomm.robotcore.util.ImmersiveMode;
 import com.qualcomm.robotcore.util.RobotLog;
 import com.qualcomm.robotcore.wifi.WifiDirectAssistant;
 
-
 import org.ftc7729.ColorBlobDetector;
-import org.ftcbootstrap.components.phone.AccelerometerComponent;
 import org.ftc7729.FTCTeamRegistry;
+import org.ftcbootstrap.components.phone.AccelerometerComponent;
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
@@ -85,6 +85,7 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
+  protected WifiManager.WifiLock wifiLock;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -171,7 +172,10 @@ public class FtcRobotControllerActivity extends Activity implements View.OnTouch
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.color_blob_detection_activity_surface_view);
         mOpenCvCameraView.setCvCameraViewListener(this);
         //cv
+    preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
+    WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+    wifiLock = wifiManager.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "");
         utility = new Utility(this);
         context = this;
         entireScreenLayout = (LinearLayout) findViewById(R.id.entire_screen);
@@ -217,7 +221,9 @@ public class FtcRobotControllerActivity extends Activity implements View.OnTouch
 
         // save 4MB of logcat to the SD card
         RobotLog.writeLogcatToDisk(this, 4 * 1024);
+    RobotLog.cancelWriteLogcatToDisk(this);
 
+    wifiLock.release();
         Intent intent = new Intent(this, FtcRobotControllerService.class);
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
 
@@ -247,6 +253,7 @@ public class FtcRobotControllerActivity extends Activity implements View.OnTouch
             mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
         }
 
+    wifiLock.acquire();
 
         // ADDED FOR ACCELEROMETER!!!
         accelerometerComponent = new AccelerometerComponent();
