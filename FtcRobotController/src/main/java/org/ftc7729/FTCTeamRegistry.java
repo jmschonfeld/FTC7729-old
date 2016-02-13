@@ -8,6 +8,7 @@ import org.ftc7729.opmodes.AutonomousBlue;
 import org.ftc7729.opmodes.AutonomousRed;
 import org.ftc7729.opmodes.ClassCombinationAttempt;
 import org.ftc7729.opmodes.OutputODS;
+import org.ftc7729.opmodes.TestMotor;
 
 
 /**
@@ -39,6 +40,8 @@ public class FTCTeamRegistry implements OpModeRegister {
       manager.register("AutonomousRed", AutonomousRed.class);
 
       manager.register("OutputODS", OutputODS.class);
+
+    manager.register("Debug", TestMotor.class);
 
       //manager.register("GamePadDriveOpMode", GamePadDriveOpMode.class);
 
